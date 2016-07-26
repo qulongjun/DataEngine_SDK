@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../jquery/jquery-1.8.1.js"></script>
+<script type="text/javascript" src="../backbone/underscore-1.4.4.js"></script>
+<script type="text/javascript" src="../backbone/backbone-0.9.10.js"></script>
+<script type="text/javascript" src="dataEngine.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+//        //创建一个数据表Object项目
+        var a = new DB.DBObject("65dddb10-6d11-46ad-a22a-eff592be69ea");
+        /**
+         * addTilte:增加一个title
+         * addStartDate:起始日期
+         * addEndDate:结束日期
+         * addField:字段
+         */
+        a.addTitle("这是一个title").addStartDate("2016-05-13 11:33:48").addEndDate("2016-05-13 11:33:48").addField({
+            label: "",
+            field_type: 0,
+            required: true,
+            unique: false,
+            is_random: true,
+            default: null,
+            min: 1,
+            max: 10,
+            cid: "i1, s1, f1, d1"
+        }).addField([{
+            label: "",
+            field_type: 0,
+            required: true,
+            unique: false,
+            is_random: true,
+            default: null,
+            min: 1,
+            max: 10,
+            cid: "i2, s2, f2, d2"
+        }, {
+            label: "",
+            field_type: 0,
+            required: true,
+            unique: false,
+            is_random: true,
+            default: null,
+            min: 1,
+            max: 10,
+            cid: "i3, s3, f3, d3"
+        }]).addOpt("id", "11");
+        /**
+         * 保存数据表到服务器中
+         */
+//        a.saveTable(true, function (data,response) {
+//            console.log(data);
+//        });
+
+        var q = a.getTableObject("a0a1ee16-76a4-4c81-a4e6-e449ce1401ba", {});
+
+        /**
+         * 获取数据表字段
+         * @type {DB.DBQuery}
+         */
+        a.getTableFields("297ea666-46f4-430a-a02b-a178f309dec0", function (data, response) {
+//            console.log(data);
+//            console.log(response);
+        }, function () {
+
+        });
+        /**
+         * 更新数据表
+         * @type {DB.DBQuery}
+         */
+        a.updateTable(true, "297ea666-46f4-430a-a02b-a178f309dec0", q, function (data, response) {
+//            console.log(data);
+//            console.log(response);
+        });
+        /**
+         * 删除数据表
+         * @type {DB.DBQuery}
+         */
+//        a.deleteTable("8109ffc9-132e-4845-976b-cfb3cc1f06c6", function (data,response) {
+//            console.log(data);
+//            console.log(response);
+//        });
+
+        //创建一个用于查询数据表的查询对象DBQuery
+        var b = new DB.DBQuery();
+//        创建一个页码配置对象,参数为每页显示数量
+        var config = new DB.DBConfig(20);
+//        设置页码
+        config.setPage(5);
+        b.addConfig(config);
+//        创建一个统计子句的Object
+        var c = new DB.DBAggregate("tdd");
+        var d = new DB.DBAggregate("tdd大多数")
+//        设置统计属性
+        c.sum('dsdc').max('a').setRange(10, 20).setFilter("aa").setSamplerThreshold(1000, 20).setMaxGroup(30);
+        d.sum('dsd12c').min('b').setRange(130, 240).setFilter("123").setSamplerThreshold(1000, 20).setMaxGroup(30);
+//        将统计子句加入到查询对象DBQuery中
+        b.addAggregate(c).addAggregate(d);
+
+
+        //创建一个查询子句DBLimit对象
+        var e = new DB.DBLimit();
+        var f = new DB.DBLimit();
+        var h = new DB.DBLimit();
+//        为查询子句设置属性
+        e.equalTo("title", '张三');
+        f.equalTo("title", '王五');
+        h.equalTo("title", '王五');
+//        两条语句使用连接字符串相连接:AND OR AND_NOT
+        f.and(e);
+        var g = e.or([h, f]);
+        var m = g.and_not(f);
+//        增加一个rank属性:设置某个字段的权重
+        m.rank("aaa", "张三").rank("vbb", "dsd");
+//        将查询子句加入到查询对象DBQuery中
+        b.addLimit(m);
+        b.addSQL("select * from user u where u.id=1");
+
+
+        //创建一个过滤子句对象DBFilter
+        var n = new DB.DBFilter();
+        var o = new DB.DBFilter;
+        //为过滤子句对象添加属性:>、<、=、<=、>=、!=
+        n.equalTo('title', 'value');
+        o.lessThanOrEqualTo('title2', 'value');
+        //两条语句使用连接字符串相连接:AND OR ANDNOT
+        var p = n.and(o).or(o).and([o, o]);
+        //将过滤子句加入到查询对象DBQuery中
+        b.addFilter(p);
+        //排序
+        b.addSort("aaa", "asc").addSort("bdd", "desc");
+
+        b.addFields(["title", "age", "rank"]);
+        //向服务器发起查询请求
+        b.Query("http://data.21epub.com/tables/c8bc79b8-b8bc-40e7-ac63-72a0c61ca523/", function (data, response) {
+            console.log("执行查询成功!");
+        });
+//
+
+        var m1 = new DB.DBFilter({"key": "zhangsan", "value": "liSi"});
+        var m2 = new DB.DBFilter({"key": "zhangsan23", "value": "<wangwu2"});
+        var m3 = m1.or(m2);
+
+        window.a = a;
+        window.b = b;
+        window.c = c;
+        window.e = e;
+        window.f = f;
+        window.g = g;
+        window.h = h;
+        window.m = m;
+        window.n = n;
+        window.o = o;
+        window.p = p;
+        window.q = q;
+        window.m1 = m1;
+        window.m2 = m2;
+        window.m3 = m3;
+    });
+</script>
+</html>
